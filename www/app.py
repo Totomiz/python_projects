@@ -4,11 +4,11 @@ from aiohttp import web
 
 logging.basicConfig(level=logging.INFO)
 
-port = 9000
+port = 8000
 host = '127.0.0.1'
 
 
-async def index():
+async def index(request):
     logging.info("index")
     # 与老师的源码相比，最重要的是要加content_type这个参数，否则会变成下载文件
     # await asyncio.sleep(5) mock
