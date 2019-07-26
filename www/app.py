@@ -18,8 +18,7 @@ async def index(request):
 
 def init():
     app = web.Application()
-    app.add_routes([web.get('/', index)])
-    app.add_routes([web.get('/db', index)])
+    app.add_routes([web.get('/', index), web.get('/db', index)])
     logging.info('Server started at {}:{}'.format(host, port))
     web.run_app(app, host=host, port=port)
 
