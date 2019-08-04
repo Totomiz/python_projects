@@ -10,16 +10,20 @@ from sqlalchemy.orm.session import *
 # dialect+driver://username:password@host:port/database
 def _engine_port(test, echo):
     if test:
-        return sqlalchemy.create_engine('mysql+mysqlconnector://root:password@localhost:3306/testpydb',
+        return sqlalchemy.create_engine('mysql+pymysql://root:password@localhost:3306/testpydb',
                                         encoding='utf-8',
+                                        # password='password',
+                                        # auth_plugin='$A$005$~msd)2 &%:xy.}Py*SV4HYHRu.YFhC69B4RGaOYNtQhhB87wwXo07LWmEGRaL8',
                                         echo=echo)
     else:
         return sqlalchemy.create_engine('mysql+mysqlconnector://root:password@localhost:3306/videodb',
                                         encoding='utf-8',
+                                        auth_plugin='mysql_native_password',
                                         echo=echo)
 
 
-engine = _engine_port(True, True)
+engine = _engine_port(True, False)
+# engine = _engine_port(True, True)
 Base = declarative_base()
 genres_dict = {'电视剧': '1,', '连续剧': '2,', '电影': '3,', '综艺': '4,', '教育': '5,', '音乐': '6,', '记录片': '7,', '动漫': '8,'}
 
@@ -48,9 +52,12 @@ class Video(Base):
 
 class Genres(Base):
     __tablename__ = 'genres'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, default=0, primary_key=True, autoincrement=True)
     name = Column(String(length=50), nullable=False, unique=True)
     path = Column(String(length=120), nullable=False, unique=True)
+
+    def __repr__(self):
+        return "<Genres(id={},name={},path={})>".format(self.id, self.name, self.path)
 
 
 class Sources(Base):

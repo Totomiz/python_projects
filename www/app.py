@@ -2,6 +2,8 @@ import logging
 
 from aiohttp import web
 
+from www.Api import get_genres
+
 logging.basicConfig(level=logging.INFO)
 
 port = 8000
@@ -13,12 +15,20 @@ async def index(request):
     # 与老师的源码相比，最重要的是要加content_type这个参数，否则会变成下载文件
     # await asyncio.sleep(5) mock
     logging.info('HELLO WORLD AGIN')
-    return web.Response(body='<h1>Awesome</h1>'.encode('utf-8'), content_type='text/html')
+    return web.Response(body='<h1>Awesome</h1>'.encode('utf-8'), content_type='text')
+
+
+async def home_genres(request):
+    logging.info("index")
+    # 与老师的源码相比，最重要的是要加content_type这个参数，否则会变成下载文件
+    # await asyncio.sleep(5) mock
+    logging.info('home_genres')
+    return web.Response(body=get_genres(), content_type='text/html')
 
 
 def init():
     app = web.Application()
-    app.add_routes([web.get('/', index), web.get('/db', index)])
+    app.add_routes([web.get('/', index), web.get('/db', index), web.get('/genres', home_genres)])
     logging.info('Server started at {}:{}'.format(host, port))
     web.run_app(app, host=host, port=port)
 
