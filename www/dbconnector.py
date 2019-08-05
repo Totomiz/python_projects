@@ -1,3 +1,4 @@
+# encoding=utf-8
 import logging
 
 import sqlalchemy
@@ -10,7 +11,7 @@ from sqlalchemy.orm.session import *
 # dialect+driver://username:password@host:port/database
 def _engine_port(test, echo):
     if test:
-        return sqlalchemy.create_engine('mysql+pymysql://root:password@localhost:3306/testpydb',
+        return sqlalchemy.create_engine('mysql+pymysql://root:password@localhost:3306/testpydb?charset=utf8',
                                         encoding='utf-8',
                                         # password='password',
                                         # auth_plugin='$A$005$~msd)2 &%:xy.}Py*SV4HYHRu.YFhC69B4RGaOYNtQhhB87wwXo07LWmEGRaL8',
@@ -25,7 +26,8 @@ def _engine_port(test, echo):
 engine = _engine_port(True, False)
 # engine = _engine_port(True, True)
 Base = declarative_base()
-genres_dict = {'电视剧': '1,', '连续剧': '2,', '电影': '3,', '综艺': '4,', '教育': '5,', '音乐': '6,', '记录片': '7,', '动漫': '8,'}
+genres_dict = {'推荐': '0', '电视剧': '1,', '连续剧': '2,', '电影': '3,', '综艺': '4,', '教育': '5,', '音乐': '6,', '记录片': '7,',
+               '动漫': '8,'}
 
 
 class Video(Base):
@@ -49,6 +51,13 @@ class Video(Base):
                                                             self.g_path, self.director, self.actors, self.subtitle,
                                                             self.desc, self.obtain_id, self.poster, self.sources)
 
+    def _asdict(self):
+        dic = {'id': self.id, 'title_cn': self.title_cn, "title_en": self.title_en, "total": self.total,
+               "g_path": self.g_path, "director": self.director, "actors": self.actors, "subtitle": self.subtitle,
+               "desc": self.desc, "obtain_id": self.obtain_id, "poster": self.poster, "sources": self.sources}
+        print('Video__asdict->', dic)
+        return dic
+
 
 class Genres(Base):
     __tablename__ = 'genres'
@@ -58,6 +67,11 @@ class Genres(Base):
 
     def __repr__(self):
         return "<Genres(id={},name={},path={})>".format(self.id, self.name, self.path)
+
+    def _asdict(self):
+        dic = {'id': self.id, 'name': self.name, 'path': self.path}
+        print('gen__asdict->', dic)
+        return dic
 
 
 class Sources(Base):
@@ -72,8 +86,14 @@ class Sources(Base):
         return "<Sources(id={},name={},src={},video_obtain_id={})>".format(self.id, self.name, self.src,
                                                                            self.video_obtain_id)
 
+    def _asdict(self):
+        dic = {'id': self.id, 'name': self.name, 'src': self.src, 'video_obtain_id': self.video_obtain_id}
+        print('Sources__asdict->', dic)
+        return dic
+
 
 # Base.metadata.drop_all(bind=engine)
+# Base.metadata.remove(Genres)
 Base.metadata.create_all(engine)
 # Base.metadata.create_all(engine)
 
