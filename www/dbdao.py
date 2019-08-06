@@ -106,6 +106,32 @@ def query_video_by_simple(typename, count):
     return result_array
 
 
+# 根据类型名,简单查找N条视频数据，不包含视频源，详细描述
+def query_video_by_slice(typename, star, end):
+    result_array = []
+    session = DBSession()
+    selet_cl = [Video.id, Video.title_cn, Video.title_en, Video.g_path, Video.poster,
+                Video.subtitle,
+                Video.actors,
+                Video.director, Video.total, Video.obtain_id]
+    var = session.query().with_entities(Video.id, Video.title_cn, Video.title_en, Video.g_path, Video.poster,
+                                        Video.subtitle,
+                                        Video.actors,
+                                        Video.director, Video.total, Video.obtain_id).filter(
+        Video.g_path == genres_dict.get(typename)).slice(
+        star, end).all()
+    for v in var:
+        item_dict = {}
+        for idx, val in enumerate(v):
+            item_dict[selet_cl[idx].name] = val
+        print(typename, v)
+        result_array.append(item_dict)
+    session.commit()
+    print('sr==', var)
+    session.close()
+    return result_array
+
+
 # 根据类型路径,简单查找N条视频数据，不包含视频源，详细描述
 def query_video_by_path_simple(g_path, count):
     result_array = []

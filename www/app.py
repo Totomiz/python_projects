@@ -57,6 +57,9 @@ def init():
                     web.get('/api/v1/detail/{id}', get_detail_data),
                     web.get('/api/v1/genres', home_genres),
                     web.get('/api/v1/home', get_home_data)])
+    app.router.add_static('/img/',
+                          path='static/img',
+                          name='img')
     logging.info('Server started at {}:{}'.format(host, port))
     web.run_app(app, host=host, port=port)
 

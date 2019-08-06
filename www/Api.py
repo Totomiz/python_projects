@@ -1,7 +1,8 @@
 from www.ApiDataConvert import success_wrap_data
 from www.dbdao import *
 
-main_types_item = ['Banner', '今日热点', '热剧点播']
+main_types_item = [['Banner', 1, "某某干嘛了"], ['今日热点', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                   ['天线宝宝', 3, '这就是巨星']]
 movie_types_item = ['Banner', '最近更新', '院线同步']
 
 
@@ -14,10 +15,16 @@ def get_home_main():
     genres = get_all_genres()
     result_dict['genres'] = genres
     dataList = []
-    for name in main_types_item:
+    for idx, valueList in enumerate(main_types_item):
         data_item_dict = {}
-        item = query_video_by_simple('电视剧', 4)
-        data_item_dict['name'] = name
+        # item = query_video_by_simple('电视剧', 4)
+        offset = 0
+        if valueList[1] > 2:
+            offset = 1
+        item = query_video_by_slice('电视剧', idx * 4 + offset, idx * 4 + offset + 4 + offset)
+        data_item_dict['name'] = valueList[0]
+        data_item_dict['style'] = valueList[1]
+        data_item_dict['message'] = valueList[2]
         data_item_dict['item'] = item
         dataList.append(data_item_dict)
     result_dict['channel'] = dataList
