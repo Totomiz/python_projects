@@ -26,7 +26,7 @@ def _engine_port(test, echo):
 engine = _engine_port(True, False)
 # engine = _engine_port(True, True)
 Base = declarative_base()
-genres_dict = {'推荐': '0', '电视剧': '1,', '连续剧': '2,', '电影': '3,', '综艺': '4,', '教育': '5,', '音乐': '6,', '记录片': '7,',
+genres_dict = {'推荐': '0,', '电视剧': '1,', '连续剧': '2,', '电影': '3,', '综艺': '4,', '教育': '5,', '音乐': '6,', '记录片': '7,',
                '动漫': '8,'}
 
 

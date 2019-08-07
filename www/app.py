@@ -2,7 +2,7 @@ import logging
 
 from aiohttp import web
 
-from www.Api import get_genres, get_home_main, get_home_type, get_detail
+from www.Api import *
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,7 +39,7 @@ async def get_home_type_data(request):
     # await asyncio.sleep(5) mock
     type = request.match_info.get('type', "1,")
     logging.info("get_home_type_data-{}".format(type))
-    return web.Response(body=get_home_type(type), content_type='text/html', charset='UTF-8')
+    return web.Response(body=get_home_category_data(type), content_type='text/html', charset='UTF-8')
 
 
 async def get_detail_data(request):

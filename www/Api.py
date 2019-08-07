@@ -3,7 +3,39 @@ from www.dbdao import *
 
 main_types_item = [['Banner', 1, "某某干嘛了"], ['今日热点', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
                    ['天线宝宝', 3, '这就是巨星']]
-movie_types_item = ['Banner', '最近更新', '院线同步']
+
+dianshi_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                      ['天线宝宝', 3, '这就是巨星']]
+lianxu_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                     ['天线宝宝', 3, '这就是巨星']]
+movie_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                    ['天线宝宝', 3, '这就是巨星']]
+zongyi_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                     ['天线宝宝', 3, '这就是巨星']]
+jiaoyu_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                     ['天线宝宝', 3, '这就是巨星']]
+yinyue_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                     ['天线宝宝', 3, '这就是巨星']]
+jilupian_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                       ['天线宝宝', 3, '这就是巨星']]
+dongman_types_item = [['Banner', 1, "某某干嘛了"], ['电视', 2, "某某干嘛了"], ['热剧点播', 3, '这就是描述'], ['乱世巨星', 3, '这就是巨星'],
+                      ['天线宝宝', 3, '这就是巨星']]
+
+# genres_dict = {'推荐': '0,', '电视剧': '1,', '连续剧': '2,', '电影': '3,', '综艺': '4,', '教育': '5,', '音乐': '6,', '记录片': '7,',
+#                '动漫': '8,'}
+
+
+category_dict = {
+    '0,': main_types_item,
+    '1,': dianshi_types_item,
+    '2,': lianxu_types_item,
+    '3,': movie_types_item,
+    '4,': zongyi_types_item,
+    '5,': jiaoyu_types_item,
+    '6,': yinyue_types_item,
+    '7,': jilupian_types_item,
+    '8,': dongman_types_item,
+}
 
 
 def get_genres():
@@ -22,6 +54,29 @@ def get_home_main():
         if valueList[1] > 2:
             offset = 1
         item = query_video_by_slice('电视剧', idx * 4 + offset, idx * 4 + offset + 4 + offset)
+        data_item_dict['name'] = valueList[0]
+        data_item_dict['style'] = valueList[1]
+        data_item_dict['message'] = valueList[2]
+        data_item_dict['item'] = item
+        dataList.append(data_item_dict)
+    result_dict['channel'] = dataList
+    return '{}'.format(success_wrap_data(result_dict))
+
+
+def get_home_category_data(g_path):
+    if g_path == '0,':
+        return get_home_main()
+    result_dict = {}
+    genres = get_all_genres()
+    result_dict['genres'] = genres
+    dataList = []
+    for idx, valueList in enumerate(category_dict[g_path]):
+        data_item_dict = {}
+        # item = query_video_by_simple('电视剧', 4)
+        offset = 0
+        if valueList[1] > 2:
+            offset = 1
+        item = query_video_by_path_slice(g_path, idx * 4 + offset, idx * 4 + offset + 4 + offset)
         data_item_dict['name'] = valueList[0]
         data_item_dict['style'] = valueList[1]
         data_item_dict['message'] = valueList[2]
