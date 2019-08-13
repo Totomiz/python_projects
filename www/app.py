@@ -1,5 +1,3 @@
-import logging
-
 from aiohttp import web
 
 from www.Api import *
@@ -50,11 +48,21 @@ async def get_detail_data(request):
     return web.Response(body=get_detail(id), content_type='text/html', charset='UTF-8')
 
 
+async def get_recommend_data(request):
+    logging.info("get_home_type_data")
+    # await asyncio.sleep(5) mock
+    id = request.match_info.get('id', "-1")
+    length = request.match_info.get('length', "6")
+    logging.info("get_recommend_data-id={} length={}".format(id, length))
+    return web.Response(body=get_detail(id), content_type='text/html', charset='UTF-8')
+
+
 def init():
     app = web.Application()
     app.add_routes([web.get('/', index),
                     web.get('/api/v1/home/{type}', get_home_type_data),
                     web.get('/api/v1/detail/{id}', get_detail_data),
+                    web.get('/api/v1/recommend/{id}/{length}', get_recommend_data),
                     web.get('/api/v1/genres', home_genres),
                     web.get('/api/v1/home', get_home_data)])
     app.router.add_static('/img/',
