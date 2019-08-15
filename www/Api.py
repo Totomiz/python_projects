@@ -62,7 +62,7 @@ def get_genres():
 
 
 # 获取主页第一页推荐数据
-def get_home_main():
+def get_home_main(g_path="1,"):
     result_dict = {}
     genres = get_all_genres()
     result_dict['genres'] = genres
@@ -77,6 +77,7 @@ def get_home_main():
         data_item_dict['name'] = valueList[0]
         data_item_dict['style'] = valueList[1]
         data_item_dict['message'] = valueList[2]
+        data_item_dict['g_path'] = g_path
         data_item_dict['item'] = item
         dataList.append(data_item_dict)
     result_dict['channel'] = dataList
@@ -85,19 +86,22 @@ def get_home_main():
 
 def get_home_category_data(g_path):
     if g_path == '0,':
-        return get_home_main()
+        return get_home_main(g_path)
     result_dict = {}
     genres = get_all_genres()
     result_dict['genres'] = genres
     dataList = []
-    for idx, valueList in enumerate(recommend_category_dict[g_path]):
+    for idx, valueList in enumerate(category_dict[g_path]):
         data_item_dict = {}
         # item = query_video_by_simple('电视剧', 4)
         offset = 0
+        if valueList[1] == 3:  # 需要获取5个
+            offset = 1
         item = query_video_by_path_slice(g_path, idx * 4 + offset, idx * 4 + offset + 4 + offset)
         data_item_dict['name'] = valueList[0]
         data_item_dict['style'] = valueList[1]
         data_item_dict['message'] = valueList[2]
+        data_item_dict['g_path'] = g_path
         data_item_dict['item'] = item
         dataList.append(data_item_dict)
     result_dict['channel'] = dataList
@@ -105,24 +109,35 @@ def get_home_category_data(g_path):
 
 
 # 获取推荐数据
-def get_recommend_data(g_path, length):
+def get_api_recommend_data(g_path, length):
     result_dict = {}
     dataList = []
 
     # 获取recommend_category_dict 中g_path对应的数据
-    for idx, valueList in enumerate(category_dict[g_path]):
+    for idx, valueList in enumerate(recommend_category_dict[g_path]):
         data_item_dict = {}
         # item = query_video_by_simple('电视剧', 4)
-        offset = 0
-        if valueList[1] > 2:
-            offset = 1
-        item = query_video_by_path_slice(g_path, idx * 4 + offset, idx * 4 + offset + 4 + offset)
+        item = query_recommend_video_by_path(g_path, length)
         data_item_dict['name'] = valueList[0]
         data_item_dict['style'] = valueList[1]
         data_item_dict['message'] = valueList[2]
+        data_item_dict['g_path'] = g_path
         data_item_dict['item'] = item
         dataList.append(data_item_dict)
     result_dict['channel'] = dataList
+    return '{}'.format(success_wrap_data(result_dict))
+
+
+# 获取分类分页数据
+def get_api_group_page_data(g_path, page):
+    result_dict = {}
+    # 15 个条目为一组
+    page_length = 15
+    query_result = query_group_page_data_by_path(g_path, page, page_length)
+    item = query_result[0]
+    total_page = query_result[1] / page_length
+    result_dict['totalPage'] = int(total_page)
+    result_dict['item'] = item
     return '{}'.format(success_wrap_data(result_dict))
 
 

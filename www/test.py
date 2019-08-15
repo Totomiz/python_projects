@@ -15,6 +15,9 @@ for k, v in genres_dict.items():
     list1.add(v)
     print(list1)
 
+def getMutiArg():
+    return [],5
+
 if __name__ == "__main__":
     find_video_name_dic()
     # print(genres_dict.items())
@@ -22,4 +25,7 @@ if __name__ == "__main__":
     # for k,v in
     # list=genres_dict.items()
     # print( list[0])
-    init_genres()
+    # init_genres()
+    print(1*15)
+    print(getMutiArg())
+

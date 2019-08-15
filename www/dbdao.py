@@ -161,7 +161,7 @@ def query_video_by_path_slice(path, star, end):
 
 
 # 根据类型,获取推荐的数据
-def query_recommend_video_by_path(path, star, end):
+def query_recommend_video_by_path(path, length):
     result_array = []
     session = DBSession()
     selet_cl = [Video.id, Video.title_cn, Video.title_en, Video.g_path, Video.poster,
@@ -172,8 +172,7 @@ def query_recommend_video_by_path(path, star, end):
                                         Video.subtitle,
                                         Video.actors,
                                         Video.director, Video.total, Video.obtain_id).filter(
-        Video.g_path == path).s(
-        star, end).all()
+        Video.g_path == path).limit(length).all()
     for v in var:
         item_dict = {}
         for idx, val in enumerate(v):
@@ -184,6 +183,36 @@ def query_recommend_video_by_path(path, star, end):
     print('sr==', var)
     session.close()
     return result_array
+
+
+# 根据类型,获取推荐的数据
+def query_group_page_data_by_path(path, page, page_length):
+    result_array = []
+    session = DBSession()
+    total_count = session.query(Video).filter(Video.g_path == path).count()
+
+    start = int(int(page) * int(page_length))
+    end = int(start + page_length)
+    print('page,page_lenth,start,end,total_count',page,page_length,start,end,total_count)
+    selet_cl = [Video.id, Video.title_cn, Video.title_en, Video.g_path, Video.poster,
+                Video.subtitle,
+                Video.actors,
+                Video.director, Video.total, Video.obtain_id]
+    var = session.query().with_entities(Video.id, Video.title_cn, Video.title_en, Video.g_path, Video.poster,
+                                        Video.subtitle,
+                                        Video.actors,
+                                        Video.director, Video.total, Video.obtain_id).filter(
+        Video.g_path == path).slice(start, end).all()
+    for v in var:
+        item_dict = {}
+        for idx, val in enumerate(v):
+            item_dict[selet_cl[idx].name] = val
+        print(path, v)
+        result_array.append(item_dict)
+    session.commit()
+    print('result_array==', result_array)
+    session.close()
+    return result_array, int(total_count)
 
 
 # 根据类型路径,简单查找N条视频数据，不包含视频源，详细描述
